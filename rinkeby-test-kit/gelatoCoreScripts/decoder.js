@@ -27,6 +27,10 @@ module.exports = async function(callback)
                 Claim Hash: ${event.returnValues.executionClaimHash}
                 Owner: ${event.returnValues.executionClaimOwner}
             `)
+            console.log(`
+              -----------------------------------------------------------------
+              -----------------------------------------------------------------
+            `)
     })});
 
 }

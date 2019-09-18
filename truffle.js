@@ -9,7 +9,7 @@ const DEFAULT_MNEMONIC =
 require("./src/helpers/loadEnv");
 
 // Get the mnemonic
-const privateKey = process.env.PK;
+const privateKey = process.env.PRIVATE_KEY;
 let mnemonic = process.env.MNEMONIC;
 // rinkeby variable set via export in package.json
 if (process.env.RINKEBY) {

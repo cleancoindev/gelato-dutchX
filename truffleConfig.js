@@ -6,6 +6,7 @@ const DEFAULT_GAS_PRICE_GWEI = 5;
 const GAS_LIMIT = 5e6;
 const DEFAULT_MNEMONIC =
   "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat";
+const privateKeyRinkeby = process.env.PRIVATE_KEY
 const RINKEBY_NODE = process.env.RINKEBY_INFURA;
 const ROPSTEN_NODE = process.env.ROPSTEN_INFURA;
 const MAINNET_NODE = process.env.MAINNET_INFURA;
@@ -40,7 +41,6 @@ function truffleConfig({
   debug(`Using gas price: ${gasPriceGWei} Gwei`);
   debug(`Optimizer enabled: ${optimizedEnabled}`);
   debug("Sign transactions using: %s", mnemonic ? "Mnemonic" : "Private Key");
-
   let _getProvider;
   if (privateKey) {
     console.log("Using private key");
