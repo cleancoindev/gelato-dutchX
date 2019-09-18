@@ -5,51 +5,53 @@
 
 let {
   numberOfSubOrders,
-  GelatoCore,
-  GelatoDutchX,
-  SellToken,
-  BuyToken,
-  DutchExchangeProxy,
-  DutchExchange,
-  timeTravel,
-  BN,
-  NUM_SUBORDERS_BN,
-  GELATO_GAS_PRICE_BN,
-  TOTAL_SELL_VOLUME,
-  SUBORDER_SIZE_BN,
-  INTERVAL_SPAN,
-  GDX_MAXGAS_BN,
-  GDX_PREPAID_FEE_BN,
-  dutchExchangeProxy,
-  dutchExchange,
-  seller,
-  accounts,
-  sellToken,
-  buyToken,
-  gelatoDutchXContract,
-  gelatoCore,
-  gelatoCoreOwner,
-  orderStateId,
-  orderState,
-  executionTime,
-  interfaceOrderId,
-  executionClaimIds,
-  MSG_VALUE_BN,
-  execShellCommand,
-  DxGetter,
-  execShellCommandLog,
-  truffleAssert,
-  userEthBalance,
-  userSellTokenBalance,
-  userBuyTokenBalance,
-  executorEthBalance,
-  dutchXMaxGasBN,
-  execDepositAndSellTrigger,
-  execDepositAndSellAction,
-  execWithdrawTrigger,
-  execWithdrawAction,
-  depositAndSellMaxGas,
-  withdrawMaxGas
+    GelatoCore,
+    GelatoDutchX,
+    SellToken,
+    BuyToken,
+    DutchExchangeProxy,
+    DutchExchange,
+    timeTravel,
+    BN,
+    NUM_SUBORDERS_BN,
+    GELATO_MAX_GAS_PRICE_BN,
+    TOTAL_SELL_VOLUME,
+    SUBORDER_SIZE_BN,
+    INTERVAL_SPAN,
+    GDX_MAXGAS_BN,
+    GDX_PREPAID_FEE_BN,
+    dutchExchangeProxy,
+    dutchExchange,
+    seller,
+    accounts,
+    sellToken,
+    buyToken,
+    gelatoDutchXContract,
+    gelatoCore,
+    gelatoCoreOwner,
+    orderStateId,
+    orderState,
+    executionTime,
+    interfaceOrderId,
+    executionClaimIds,
+    MSG_VALUE_BN,
+    execShellCommand,
+    DxGetter,
+    execShellCommandLog,
+    truffleAssert,
+    userEthBalance,
+    userSellTokenBalance,
+    userBuyTokenBalance,
+    executorEthBalance,
+    dutchXMaxGasBN,
+    execDepositAndSellTrigger,
+    execDepositAndSellAction,
+    execWithdrawTrigger,
+    execWithdrawAction,
+    depositAndSellMaxGas,
+    withdrawMaxGas,
+    CURRENT_GAS_PRICE,
+    GELATO_RECOMMENDED_GAS_PRICE_BN
 } = require("./truffleTestConfig.js");
 
 let txHash;
@@ -62,6 +64,7 @@ let decodedPayloads = {};
 let definedExecutionTimeBN;
 let execDepositAndSell;
 let execWithdraw;
+let txGasPrice;
 
 describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () => {
   before(async () => {
@@ -76,8 +79,7 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
     gelatoCoreOwner = await gelatoCore.contract.methods.owner().call();
     seller = accounts[2]; // account[2]
     executor = accounts[9];
-    // execDepositAndSell = web3.eth.abi.encodeFunctionSignature('execDepositAndSell(uint256,address,address,uint256,uint256,uint256, uint256,uint256,bool)')
-    // execWithdraw = web3.eth.abi.encodeFunctionSignature('execWithdraw(uint256,address,address,uint256,uint256)')
+    txGasPrice = CURRENT_GAS_PRICE.toString()
   });
 
   it("Fetch Before Balance?", async function() {
@@ -140,7 +142,7 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
     totalPrepayment = new BN(gelatoPrepayment).mul(NUM_SUBORDERS_BN);
 
     // benchmarked gasUsed = 726,360 (for 2 subOrders + 1 lastWithdrawal)
-    let txGasPrice = await web3.utils.toWei("5", "gwei");
+    // let txGasPrice = await web3.utils.toWei("5", "gwei");
 
     let mintExecutionClaimId = await gelatoCore.contract.methods
       .getCurrentExecutionClaimId()
@@ -174,8 +176,7 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
     );
 
     // Calc how much the core ower paid for the tx
-    let sellerTxCost = txGasPrice * txReceipt.gasUsed;
-    let sellerTxCostBN = new BN(sellerTxCost);
+    let sellerTxCostBN = new BN(txGasPrice).mul(new BN(txReceipt.gasUsed));
     // SET GAS PRICE
 
     // CHECK that core owners ETH balance decreased by 1 ETH + tx fees

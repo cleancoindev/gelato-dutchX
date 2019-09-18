@@ -5,51 +5,53 @@
 
 let {
   numberOfSubOrders,
-  GelatoCore,
-  GelatoDutchX,
-  SellToken,
-  BuyToken,
-  DutchExchangeProxy,
-  DutchExchange,
-  timeTravel,
-  BN,
-  NUM_SUBORDERS_BN,
-  GELATO_GAS_PRICE_BN,
-  TOTAL_SELL_VOLUME,
-  SUBORDER_SIZE_BN,
-  INTERVAL_SPAN,
-  GDX_MAXGAS_BN,
-  GDX_PREPAID_FEE_BN,
-  dutchExchangeProxy,
-  dutchExchange,
-  seller,
-  accounts,
-  sellToken,
-  buyToken,
-  gelatoDutchXContract,
-  gelatoCore,
-  gelatoCoreOwner,
-  orderStateId,
-  orderState,
-  executionTime,
-  interfaceOrderId,
-  executionClaimIds,
-  MSG_VALUE_BN,
-  execShellCommand,
-  DxGetter,
-  execShellCommandLog,
-  truffleAssert,
-  userEthBalance,
-  userSellTokenBalance,
-  userBuyTokenBalance,
-  executorEthBalance,
-  dutchXMaxGasBN,
-  execDepositAndSellTrigger,
-  execDepositAndSellAction,
-  execWithdrawTrigger,
-  execWithdrawAction,
-  depositAndSellMaxGas,
-  withdrawMaxGas
+    GelatoCore,
+    GelatoDutchX,
+    SellToken,
+    BuyToken,
+    DutchExchangeProxy,
+    DutchExchange,
+    timeTravel,
+    BN,
+    NUM_SUBORDERS_BN,
+    GELATO_MAX_GAS_PRICE_BN,
+    TOTAL_SELL_VOLUME,
+    SUBORDER_SIZE_BN,
+    INTERVAL_SPAN,
+    GDX_MAXGAS_BN,
+    GDX_PREPAID_FEE_BN,
+    dutchExchangeProxy,
+    dutchExchange,
+    seller,
+    accounts,
+    sellToken,
+    buyToken,
+    gelatoDutchXContract,
+    gelatoCore,
+    gelatoCoreOwner,
+    orderStateId,
+    orderState,
+    executionTime,
+    interfaceOrderId,
+    executionClaimIds,
+    MSG_VALUE_BN,
+    execShellCommand,
+    DxGetter,
+    execShellCommandLog,
+    truffleAssert,
+    userEthBalance,
+    userSellTokenBalance,
+    userBuyTokenBalance,
+    executorEthBalance,
+    dutchXMaxGasBN,
+    execDepositAndSellTrigger,
+    execDepositAndSellAction,
+    execWithdrawTrigger,
+    execWithdrawAction,
+    depositAndSellMaxGas,
+    withdrawMaxGas,
+    CURRENT_GAS_PRICE,
+    GELATO_RECOMMENDED_GAS_PRICE_BN
 } = require("./truffleTestConfig.js");
 
 let txHash;
@@ -74,6 +76,8 @@ let execWithdraw;
 let isDepositAndSell;
 // Gas limit 1M
 let gasLimit = 1000000;
+let txGasPrice;
+
 
 describe("Successfully execute execution claim", () => {
   before(async () => {
@@ -89,6 +93,7 @@ describe("Successfully execute execution claim", () => {
     seller = accounts[2];
     revertExecutor = accounts[8];
     executor = accounts[9];
+    txGasPrice = CURRENT_GAS_PRICE.toString()
     // execDepositAndSell = web3.eth.abi.encodeFunctionSignature('execDepositAndSell(uint256,address,address,uint256,uint256,uint256,uint256,uint256,bool)')
     // execWithdraw = web3.eth.abi.encodeFunctionSignature('execWithdraw(uint256,address,address,uint256,uint256)')
   });
@@ -450,7 +455,6 @@ describe("Successfully execute execution claim", () => {
     );
 
     // Gas price to calc executor payout
-    let txGasPrice = await web3.utils.toWei("5", "gwei");
     function execute() {
       return new Promise(async (resolve, reject) => {
         await gelatoCore.contract.methods
@@ -524,8 +528,8 @@ describe("Successfully execute execution claim", () => {
 
     amountReceivedByExecutor = new BN(executorPayout);
 
-    let executorTxCost = txGasPrice * execTxReceipt.gasUsed;
-    let executorTxCostBN = new BN(executorTxCost);
+    // let executorTxCost = txGasPrice * execTxReceipt.gasUsed;
+    // let executorTxCostBN = new BN(executorTxCost);
 
     // CHECK that core owners ETH balance decreased by 1 ETH + tx fees
     // Sellers ETH Balance post mint
@@ -583,48 +587,58 @@ describe("Successfully execute execution claim", () => {
     //   }
     // );
 
-    // let zero;
-    // let num0;
-    // let num1;
-    // let num2;
-    // let num3;
-    // let num4;
-    // let num5;
-    // let num6;
-    // let num7;
+    let zero;
+    let num0;
+    let num1;
+    let num2;
+    let num3;
+    let num4;
+    let num5;
+    let num6;
+    let num7;
 
-    // let one
-    // let two;
-    // let three;
-    // let four;
-    // let five;
-    // let six;
-    // let seven;
+    let one
+    let two;
+    let three;
+    let four;
+    let five;
+    let six;
+    let seven;
 
-    // // CHECK IF Execution failed or not
-    // await gelatoCore.getPastEvents(
-    //   "LogGasConsumption",
-    //   (error, events) => {
-    //     zero = events[0].returnValues.gasConsumed
-    //     num0 = events[0].returnValues.num
-    //     one = events[1].returnValues.gasConsumed
-    //     num1 = events[1].returnValues.num
-    //     two = events[2].returnValues.gasConsumed
-    //     num2 = events[2].returnValues.num
-    //     three = events[3].returnValues.gasConsumed
-    //     num3 = events[3].returnValues.num
-    //     four = events[4].returnValues.gasConsumed
-    //     num4 = events[4].returnValues.num
-    //     five = events[5].returnValues.gasConsumed
-    //     num5 = events[5].returnValues.num
-    //     six = events[6].returnValues.gasConsumed
-    //     num6 = events[6].returnValues.num
-    //     seven = events[7].returnValues.gasConsumed
-    //     num7 = events[7].returnValues.num
-    //   }
-    // );
-    // let gasOverhead = 41414;
-    // let firstOverhead = (gasLimit - zero)
+    // CHECK IF Execution failed or not
+    await gelatoCore.getPastEvents(
+      "LogGasConsumption",
+      (error, events) => {
+        zero = events[0].returnValues.gasConsumed
+        num0 = events[0].returnValues.num
+        one = events[1].returnValues.gasConsumed
+        num1 = events[1].returnValues.num
+        two = events[2].returnValues.gasConsumed
+        num2 = events[2].returnValues.num
+        // three = events[3].returnValues.gasConsumed
+        // num3 = events[3].returnValues.num
+        // four = events[4].returnValues.gasConsumed
+        // num4 = events[4].returnValues.num
+        // five = events[5].returnValues.gasConsumed
+        // num5 = events[5].returnValues.num
+        // six = events[6].returnValues.gasConsumed
+        // num6 = events[6].returnValues.num
+        // seven = events[7].returnValues.gasConsumed
+        // num7 = events[7].returnValues.num
+      }
+    );
+    let gasOverhead = 41414;
+    console.log(`Gas Limit: ${gasLimit} | Zero: ${zero}`)
+    let firstOverhead = (gasLimit - zero)
+    let lastOverhead = one - two
+
+    console.log(`
+    ---------------
+    first Overhead                ${firstOverhead}
+    last Overhead                 ${lastOverhead}
+    Measured Cost                 ${zero - one}
+    Real Tx cost                  ${execTxReceipt.gasUsed}
+      `)
     // let inbetweenGasLeft = (zero - one) + (two - three) + (six - seven)
     // let secondOverhead = six - seven
     // let beforeCanExec = (gasLimit - zero)
@@ -635,8 +649,8 @@ describe("Successfully execute execution claim", () => {
     // let execEnd = (five - six)
     // let executorPayoutCalc = zero - six + gasOverhead
 
-    // // let internalGasConsumption = firstInternal + secondInternal + thirdInternal + externalAtomicCall
-    // // let canExecuteCost = (zero - one)
+    // let internalGasConsumption = firstInternal + secondInternal + thirdInternal + externalAtomicCall
+    // let canExecuteCost = (zero - one)
 
     // console.log(`
     // -------------------
@@ -646,21 +660,21 @@ describe("Successfully execute execution claim", () => {
     //   ${num4}: ${four}
     //   ${num5}: ${five}
 
-    //   In between Gas Left:            ${inbetweenGasLeft}
+    // //   In between Gas Left:            ${inbetweenGasLeft}
 
-    //   -------------------
-    //   first Overhead                  ${firstOverhead}
-    //   second Overhead                 ${secondOverhead}
-    //   Total event based:              ${gasLimit - seven}
-    //   Calc Executor Payout Gas:       ${executorPayoutCalc}
-    //   -------------------
-    //   Diff:                           ${gasLimit - seven - executorPayoutCalc}
+    // //   -------------------
+    // //   first Overhead                  ${firstOverhead}
+    // //   second Overhead                 ${secondOverhead}
+    // //   Total event based:              ${gasLimit - seven}
+    // //   Calc Executor Payout Gas:       ${executorPayoutCalc}
+    // //   -------------------
+    // //   Diff:                           ${gasLimit - seven - executorPayoutCalc}
 
-    //   Total event based:              ${gasLimit - seven}
-    //   Total real:                     ${execTxReceipt.gasUsed}
-    //   -------------------
-    //   Diff:                           ${gasLimit - seven - execTxReceipt.gasUsed}
-    // `)
+    // //   Total event based:              ${gasLimit - seven}
+    // //   Total real:                     ${execTxReceipt.gasUsed}
+    // //   -------------------
+    // //   Diff:                           ${gasLimit - seven - execTxReceipt.gasUsed}
+    // // `)
 
     // // Tests to test whether gas consumption of static parts of exec are the same
 

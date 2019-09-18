@@ -15,13 +15,15 @@ const truffleAssert = require('truffle-assertions');
 
 // Global variables
 const BN = web3.utils.BN;
-const GELATO_GAS_PRICE_BN = new BN(web3.utils.toWei("5", "gwei"));
+const GELATO_MAX_GAS_PRICE_BN = new BN(web3.utils.toWei("100", "gwei"));
+const GELATO_RECOMMENDED_GAS_PRICE_BN = new BN(web3.utils.toWei("80", "gwei"));
 const GDX_MAXGAS_BN = new BN("500000"); // 500.000 must be benchmarked
-const GDX_PREPAID_FEE_BN = GDX_MAXGAS_BN.mul(GELATO_GAS_PRICE_BN); // wei
+const GDX_PREPAID_FEE_BN = GDX_MAXGAS_BN.mul(GELATO_MAX_GAS_PRICE_BN); // wei
 const execDepositAndSellTrigger = "execDepositAndSellTrigger(uint256,address,address,uint256,uint256,uint256)";
 const execDepositAndSellAction = "execDepositAndSellAction(uint256,address,address,uint256,uint256,uint256,uint256)";
 const execWithdrawTrigger = "execWithdrawTrigger(uint256,address,address,uint256,uint256)";
 const execWithdrawAction = "execWithdrawAction(uint256,address,address,uint256,uint256)";
+const CURRENT_GAS_PRICE = new BN(web3.utils.toWei("30", "gwei"));
 
 // Split Sell Order Details
 const numberOfSubOrders = "2"
@@ -66,7 +68,7 @@ module.exports = {
     timeTravel,
     BN,
     NUM_SUBORDERS_BN,
-    GELATO_GAS_PRICE_BN,
+    GELATO_MAX_GAS_PRICE_BN,
     TOTAL_SELL_VOLUME,
     SUBORDER_SIZE_BN,
     INTERVAL_SPAN,
@@ -101,5 +103,7 @@ module.exports = {
     execWithdrawTrigger,
     execWithdrawAction,
     depositAndSellMaxGas,
-    withdrawMaxGas
+    withdrawMaxGas,
+    CURRENT_GAS_PRICE,
+    GELATO_RECOMMENDED_GAS_PRICE_BN
 };

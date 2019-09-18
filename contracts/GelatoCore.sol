@@ -496,6 +496,7 @@ contract GelatoCore is GelatoClaim, Ownable {
     {
         // // Calculate start GAS, set by the executor.
         uint256 startGas = gasleft();
+        emit LogGasConsumption(startGas,0);
 
         // 3: Start gas should be equal or greater to the interface maxGas, gas overhead plus maxGases of canExecute and the internal operations of conductAtomicCall
         require(startGas >= getMaxExecutionGasConsumption(_actionMaxGas),
@@ -569,6 +570,7 @@ contract GelatoCore is GelatoClaim, Ownable {
         uint256 executorPayout;
         {
             uint256 endGas = gasleft();
+            emit LogGasConsumption(endGas, 1);
             // Calaculate how much gas we used up in this function. Subtract the certain gas refunds the executor will receive for nullifying values
             // Gas Overhead corresponds to the actions occuring before and after the gasleft() calcs
             // @DEV UPDATE WITH NEW FUNC
@@ -598,6 +600,8 @@ contract GelatoCore is GelatoClaim, Ownable {
 
         // Increase executor balance by executorPayout
         executorBalances[msg.sender] = executorBalances[msg.sender].add(executorPayout);
+
+        emit LogGasConsumption(gasleft(), 2);
     }
 
     // To protect from interfaceBalance drain re-entrancy attack

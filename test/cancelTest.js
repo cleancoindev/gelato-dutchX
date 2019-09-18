@@ -1,50 +1,52 @@
 let {
   numberOfSubOrders,
-  GelatoCore,
-  GelatoDutchX,
-  SellToken,
-  BuyToken,
-  DutchExchangeProxy,
-  DutchExchange,
-  timeTravel,
-  BN,
-  NUM_SUBORDERS_BN,
-  GELATO_GAS_PRICE_BN,
-  TOTAL_SELL_VOLUME,
-  SUBORDER_SIZE_BN,
-  INTERVAL_SPAN,
-  GDX_MAXGAS_BN,
-  GDX_PREPAID_FEE_BN,
-  dutchExchangeProxy,
-  dutchExchange,
-  seller,
-  accounts,
-  sellToken,
-  buyToken,
-  gelatoDutchXContract,
-  gelatoCore,
-  gelatoCoreOwner,
-  orderStateId,
-  orderState,
-  executionTime,
-  interfaceOrderId,
-  executionClaimIds,
-  MSG_VALUE_BN,
-  execShellCommand,
-  DxGetter,
-  execShellCommandLog,
-  truffleAssert,
-  userEthBalance,
-  userSellTokenBalance,
-  userBuyTokenBalance,
-  executorEthBalance,
-  dutchXMaxGasBN,
-  execDepositAndSellTrigger,
-  execDepositAndSellAction,
-  execWithdrawTrigger,
-  execWithdrawAction,
-  depositAndSellMaxGas,
-  withdrawMaxGas
+    GelatoCore,
+    GelatoDutchX,
+    SellToken,
+    BuyToken,
+    DutchExchangeProxy,
+    DutchExchange,
+    timeTravel,
+    BN,
+    NUM_SUBORDERS_BN,
+    GELATO_MAX_GAS_PRICE_BN,
+    TOTAL_SELL_VOLUME,
+    SUBORDER_SIZE_BN,
+    INTERVAL_SPAN,
+    GDX_MAXGAS_BN,
+    GDX_PREPAID_FEE_BN,
+    dutchExchangeProxy,
+    dutchExchange,
+    seller,
+    accounts,
+    sellToken,
+    buyToken,
+    gelatoDutchXContract,
+    gelatoCore,
+    gelatoCoreOwner,
+    orderStateId,
+    orderState,
+    executionTime,
+    interfaceOrderId,
+    executionClaimIds,
+    MSG_VALUE_BN,
+    execShellCommand,
+    DxGetter,
+    execShellCommandLog,
+    truffleAssert,
+    userEthBalance,
+    userSellTokenBalance,
+    userBuyTokenBalance,
+    executorEthBalance,
+    dutchXMaxGasBN,
+    execDepositAndSellTrigger,
+    execDepositAndSellAction,
+    execWithdrawTrigger,
+    execWithdrawAction,
+    depositAndSellMaxGas,
+    withdrawMaxGas,
+    CURRENT_GAS_PRICE,
+    GELATO_RECOMMENDED_GAS_PRICE_BN
   } = require("./truffleTestConfig.js");
 
 
@@ -62,6 +64,8 @@ let depositAndSellClaim;
 let withdrawClaim;
 let sellOrder;
 let userSellTokenBalanceAfter;
+let txGasPrice
+
 
 describe("Cancel outstanding execution claims", () => {
     // ******** Deploy new instances Test ********
@@ -78,6 +82,7 @@ describe("Cancel outstanding execution claims", () => {
         seller = accounts[2]; // account[2]
         revertExecutor = accounts[8]
         executor = accounts[9];
+        txGasPrice = CURRENT_GAS_PRICE.toString()
     });
 
     it("Fetch Before Balance", async function() {

@@ -7,12 +7,12 @@ const GelatoCore = artifacts.require("GelatoCore");
 // GelatoCore constructor params
 const MIN_INTERFACE_BALANCE = web3.utils.toWei("0.5", "ether");
 const EXECUTOR_PROFIT = web3.utils.toWei("2", "finney");
-const EXECUTOR_GAS_PRICE = web3.utils.toWei("5", "gwei");
+const EXECUTOR_GAS_PRICE = web3.utils.toWei("100", "gwei");
 const CAN_EXEC_FN_MAX_GAS = 100000;
 const FIXEDGASCONSUMPTIONINBETWEEN = 100000;
 const UNCOUNTEDGASCONSUMPTION = 41414;
 const EXECUTOR_REFUNDED_GAS = 50000;
-const RECOMMENDED_GAS_PRICE_FOR_INTERFACES = web3.utils.toWei("5", "gwei");
+const RECOMMENDED_GAS_PRICE_FOR_INTERFACES = web3.utils.toWei("80", "gwei");
 
 module.exports = async function(deployer, network, accounts) {
   if (network.startsWith("dev")) {

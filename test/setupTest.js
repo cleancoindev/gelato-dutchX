@@ -4,50 +4,59 @@
  */
 
 let {
-    numberOfSubOrders,
-    GelatoCore,
-    GelatoDutchX,
-    SellToken,
-    BuyToken,
-    DutchExchangeProxy,
-    DutchExchange,
-    timeTravel,
-    BN,
-    NUM_SUBORDERS_BN,
-    GELATO_GAS_PRICE_BN,
-    TOTAL_SELL_VOLUME,
-    SUBORDER_SIZE_BN,
-    INTERVAL_SPAN,
-    GDX_MAXGAS_BN,
-    GDX_PREPAID_FEE_BN,
-    dutchExchangeProxy,
-    dutchExchange,
-    seller,
-    accounts,
-    sellToken,
-    buyToken,
-    gelatoDutchXContract,
-    gelatoCore,
-    gelatoCoreOwner,
-    orderStateId,
-    orderState,
-    executionTime,
-    interfaceOrderId,
-    executionClaimIds,
-    MSG_VALUE_BN,
-    execShellCommand,
-    DxGetter,
-    execShellCommandLog,
-    truffleAssert,
-    userEthBalance,
-    userSellTokenBalance,
-    userBuyTokenBalance,
-    executorEthBalance,
-    dutchXMaxGasBN
+  numberOfSubOrders,
+  GelatoCore,
+  GelatoDutchX,
+  SellToken,
+  BuyToken,
+  DutchExchangeProxy,
+  DutchExchange,
+  timeTravel,
+  BN,
+  NUM_SUBORDERS_BN,
+  GELATO_MAX_GAS_PRICE_BN,
+  TOTAL_SELL_VOLUME,
+  SUBORDER_SIZE_BN,
+  INTERVAL_SPAN,
+  GDX_MAXGAS_BN,
+  GDX_PREPAID_FEE_BN,
+  dutchExchangeProxy,
+  dutchExchange,
+  seller,
+  accounts,
+  sellToken,
+  buyToken,
+  gelatoDutchXContract,
+  gelatoCore,
+  gelatoCoreOwner,
+  orderStateId,
+  orderState,
+  executionTime,
+  interfaceOrderId,
+  executionClaimIds,
+  MSG_VALUE_BN,
+  execShellCommand,
+  DxGetter,
+  execShellCommandLog,
+  truffleAssert,
+  userEthBalance,
+  userSellTokenBalance,
+  userBuyTokenBalance,
+  executorEthBalance,
+  dutchXMaxGasBN,
+  execDepositAndSellTrigger,
+  execDepositAndSellAction,
+  execWithdrawTrigger,
+  execWithdrawAction,
+  depositAndSellMaxGas,
+  withdrawMaxGas,
+  CURRENT_GAS_PRICE,
+  GELATO_RECOMMENDED_GAS_PRICE_BN
 } = require("./truffleTestConfig.js");
 
 let txHash;
 let txReceipt;
+let txGasPrice;
 
 describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () => {
   // ******** Deploy new instances Test ********
@@ -62,6 +71,7 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
     accounts = await web3.eth.getAccounts();
     gelatoCoreOwner = await gelatoCore.contract.methods.owner().call();
     seller = accounts[2]; // account[2]
+    txGasPrice = CURRENT_GAS_PRICE.toString()
   });
 
   it("seller is 0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef", async () => {
@@ -83,7 +93,6 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
     );
 
     // Let gelatoDutchExchange increase its balance by 1 ETH
-    let txGasPrice = await web3.utils.toWei("5", "gwei");
     await gelatoDutchExchange.contract.methods
       .addBalanceToGelato()
       .send({
@@ -187,7 +196,6 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
     );
 
     // Let gelatoDutchExchange increase its balance by 1 ETH
-    let txGasPrice = await web3.utils.toWei("5", "gwei");
     await gelatoDutchExchange.contract.methods
       .addBalanceToGelato()
       .send({
@@ -263,7 +271,7 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
     );
 
     // Switch GasPrice back to 5
-    let oldGasPrice = web3.utils.toWei("5", "gwei");
+    let oldGasPrice = GELATO_RECOMMENDED_GAS_PRICE_BN.toString()
     await gelatoCore.contract.methods
       .updateRecommendedGasPriceForInterfaces(oldGasPrice)
       .send({ from: gelatoCoreOwner, gas: 5000000 });
@@ -319,6 +327,10 @@ describe("Test the successful setup of gelatoDutchExchangeInterface (gdx)", () =
       executorGasPrice,
       "executorGasPrice should be updateable"
     );
+    await gelatoCore.contract.methods
+    .updateExecutorGasPrice(CURRENT_GAS_PRICE.toString())
+    .send({ from: gelatoCoreOwner, gas: 5000000 });
+
   });
 
 

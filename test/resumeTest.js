@@ -72,12 +72,13 @@ describe("TEST RESUME", () => {
     // Fetch Executor Ether Balance
     executorEthBalanceAfter = await gelatoCore.contract.methods.executorBalances(executor).call()
 
-    let hunderdEth = web3.utils.toWei("0", "ether");
+    let hunderdEth = web3.utils.toWei("100", "ether");
+    let zeroEth = web3.utils.toWei("0", "ether");
     let twentyWeth = TOTAL_SELL_VOLUME;
     userBuyTokenBalance = 0;
     userSellTokenBalance = twentyWeth;
     userEthBalance = hunderdEth;
-    executorEthBalance = hunderdEth;
+    executorEthBalance = zeroEth;
     console.log(`
             ***************************************************+
 
